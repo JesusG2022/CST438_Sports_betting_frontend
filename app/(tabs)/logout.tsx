@@ -17,7 +17,7 @@ const LogoutScreen = () => {
       console.log("AsyncStorage cleared");
 
       // Navigate to Home screen after logout (ok for some reason u have to go to file name not component name)
-      navigation.navigate("index");
+      navigation.navigate("Login");
     } catch (error) {
       console.error("Error clearing AsyncStorage:", error);
     }

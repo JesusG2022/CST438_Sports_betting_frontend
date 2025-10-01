@@ -27,7 +27,7 @@ interface Team {
 
 const FavoriteTeams = () => {
   const route = useRoute<RouteProp<RootStackParamList, "favoriteTeams">>();
-  const username = route.params?.username; // Get username from navigation params
+  const username = route.params?.username;
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -45,13 +45,14 @@ const FavoriteTeams = () => {
         const favTeams = await getFavTeamNames(username);
         setSelectedTeams(favTeams || []);
 
-        process.env.RAPIDAPI_KEY = "f48a5921f5msh580809ba8c9e6cfp181a8ajsn545d715d6844";
+        // TODO: This now fetches teams from our own backend via callTeams().
+        // Ensure the backend supports GET /api/teams and returns correct format.
         const teamData = await callTeams();
 
         if (teamData && teamData.length > 0) {
           setTeams(teamData);
         } else {
-          console.error("No teams received from API.");
+          console.error("No teams received from backend.");
         }
       } catch (error) {
         console.error("Error fetching teams:", error);
@@ -88,7 +89,7 @@ const FavoriteTeams = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Select Your Favorite Teams</Text>
       {teams.length === 0 ? (
-        <Text style={styles.errorText}>No teams available. Check API Key.</Text>
+        <Text style={styles.errorText}>No teams available. Check backend connection.</Text>
       ) : (
         <FlatList
           data={teams}

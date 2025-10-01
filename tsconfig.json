@@ -3,6 +3,7 @@
   "compilerOptions": {
     "jsx": "react-native", 
     "strict": true,
+    "jsx": "react-native",
     "paths": {
       "@/*": [
         "./*"
@@ -15,5 +16,4 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]
-  
 }

@@ -73,11 +73,15 @@ const UpcomingGames = () => {
         "to:",
         endDateString
       );
- 
+
       // Fetch games for each of the selected teams using callGamesByDate
       let allGames: Game[] = [];
       for (const teamID of favTeamNames) {
         console.log(`📡 Fetching games for team: ${teamID}`);
+
+        // TODO: This call now uses our backend's /api/games endpoint.
+        // Make sure our Spring Boot backend supports this:
+        // GET /api/games?start=YYYY-MM-DD&end=YYYY-MM-DD&teamId=XXX
         const teamGames = await callGamesByDate(
           startDateString,
           endDateString,
@@ -110,7 +114,7 @@ const UpcomingGames = () => {
   // This allows the view to update when doing tab navigation.
   useFocusEffect(
     useCallback(() => {
-      console.log("re-fetching games...");
+      console.log("re-fetching games..."); 
       fetchGames();
     }, [fetchGames])
   );
@@ -172,9 +176,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   title: {
-    fontSize: 22, // Adjusted font size for better fit
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 12, // Reduced margin for better fit on smaller screens
+    marginBottom: 12,
     textAlign: "center",
   },
   loader: {
@@ -194,25 +198,25 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   teamText: {
-    fontSize: 16, 
-    textAlign: "center", 
+    fontSize: 16,
+    textAlign: "center",
   },
   dateText: {
-    fontSize: 14, 
+    fontSize: 14,
     color: "#666",
-    textAlign: "center", 
+    textAlign: "center",
   },
   winRateText: {
-    fontSize: 14, 
+    fontSize: 14,
     color: "#4CAF50",
-    marginTop: 6, 
+    marginTop: 6,
     textAlign: "center",
   },
   teamLogoContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center", 
-    marginBottom: 8,  
+    justifyContent: "center",
+    marginBottom: 8,
   },
   teamLogo: {
     width: 30,
@@ -220,4 +224,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
 });
+
 export default UpcomingGames;

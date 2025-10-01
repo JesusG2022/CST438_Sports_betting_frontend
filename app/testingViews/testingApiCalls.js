@@ -1,16 +1,20 @@
 import React, { useEffect } from "react";
 import { View, Text, Button } from "react-native";
-import { callGamesByDate } from "../ApiScripts"; // Assuming the function is in ApiScripts
+import { callGamesByDate } from "../ApiScripts"; // This now calls your own backend
 
 const GameFetcher = () => {
   const startDate = "2025-01-01";
   const endDate = "2025-01-31";
-  const teamID = "1"; 
+  const teamID = "1";
 
   const testFetchGames = async () => {
     try {
-      console.log("Calling API...");
+      console.log("Calling backend API...");
+
+      // TODO: Make sure backend supports this route:
+      // GET /api/games?start=2025-01-01&end=2025-01-31&teamId=1
       const gameData = await callGamesByDate(startDate, endDate, teamID);
+
       console.log("Fetched games:", gameData);
     } catch (error) {
       console.error("Error fetching games:", error);
@@ -23,7 +27,7 @@ const GameFetcher = () => {
 
   return (
     <View>
-      <Text>Check the console for fetched games!</Text>
+      <Text>Check the console for fetched games from backend!</Text>
       <Button title="Test API Call" onPress={testFetchGames} />
     </View>
   );

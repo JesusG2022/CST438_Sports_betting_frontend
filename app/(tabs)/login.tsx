@@ -22,8 +22,11 @@ import { makeRedirectUri } from 'expo-auth-session';
 // Initialize WebBrowser for OAuth
 WebBrowser.maybeCompleteAuthSession();
 
-// NOTE: You must register OAuth client IDs with Google and add the redirect URI that Expo uses.
-const CLIENT_ID = process.env.EXPO_CLIENT_ID || "YOUR_EXPO_CLIENT_ID";
+// Google OAuth Client IDs
+// Get these from: https://console.cloud.google.com/apis/credentials
+const GOOGLE_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_EXPO_CLIENT_ID || "235409881865-ib1ic7akumtkb50bkt2crnr4r9brun35.apps.googleusercontent.com";
+const GOOGLE_ANDROID_CLIENT_ID = process.env.EXPO_PUBLIC_EXPO_ANDRIOD_ID || "235409881865-1jggrffjk7vkoiejp54cdklb53bh20ut.apps.googleusercontent.com";
+const GOOGLE_IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID; // Add iOS client ID later if needed
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
@@ -33,8 +36,9 @@ export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: CLIENT_ID,
-    scopes: ['profile', 'email']
+    webClientId: GOOGLE_WEB_CLIENT_ID,
+    iosClientId: GOOGLE_IOS_CLIENT_ID,
+    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
   });
 
   useEffect(() => {
@@ -55,7 +59,14 @@ export default function LoginScreen() {
     if (response?.type === 'success') {
       const { authentication } = response;
       console.log('Authentication successful:', authentication);
+      
+      // You can fetch user info here with the access token
+      // fetchUserInfo(authentication?.accessToken);
+      
       navigation.navigate("favoriteTeams", { username: "google-user" });
+    } else if (response?.type === 'error') {
+      console.error('OAuth error:', response.error);
+      Alert.alert('Error', `Authentication failed: ${response.error?.message || 'Unknown error'}`);
     }
   }, [response, navigation]);
 
@@ -99,17 +110,10 @@ export default function LoginScreen() {
       // Log the redirect URI that will be used
       const redirectUri = makeRedirectUri();
       console.log('Redirect URI:', redirectUri);
+      console.log('Request config:', request);
 
       const result = await promptAsync();
       console.log('Auth result:', JSON.stringify(result, null, 2));
-
-      if (result.type === 'success') {
-        // The useEffect above will handle the success case
-        console.log('Sign in successful');
-      } else {
-        console.log('Sign in was cancelled or failed:', result);
-        Alert.alert('Error', 'Google sign in was cancelled or failed.');
-      }
     } catch (error: any) {
       console.error('Google sign in error:', error);
       Alert.alert('Error', 'Failed to sign in with Google. ' + (error.message || 'Unknown error'));
@@ -144,7 +148,11 @@ export default function LoginScreen() {
 
         <View style={{ height: 20 }} />
 
-        <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn}>
+        <TouchableOpacity 
+          style={styles.googleButton} 
+          onPress={handleGoogleSignIn}
+          disabled={!request}
+        >
           <Text style={styles.googleButtonText}>Sign in with Google</Text>
         </TouchableOpacity>
       </View>

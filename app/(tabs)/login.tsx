@@ -12,7 +12,6 @@ import {
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/types";
 import loginPic from "../../assets/images/loginPic2.jpg";
-import { verifyUserLogin, getUserID, initializeDatabase } from "../../database/db";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen() {
@@ -22,48 +21,37 @@ export default function LoginScreen() {
   const [dbInitialized, setDbInitialized] = useState(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  useEffect(() => {
-    const initializeDb = async () => {
-      try {
-        await initializeDatabase();
-        setDbInitialized(true);
-      } catch (error) {
-        console.error("Database initialization error:", error);
-        Alert.alert("Error", "An error occurred while initializing the database.");
-      }
-    };
-
-    initializeDb();
-  }, []);
-
   const handleLogin = async () => {
     if (!username || !password) {
       Alert.alert("Error", "Please enter both username and password.");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
-      const isValidUser = await verifyUserLogin(username, password);
+      const response = await fetch(`http://10.11.116.214:8080/users/login`, { // points to back end so back end has to fetch from database ip might be hardcoded?
+        method: "POST", // SENDING TO BACKEND / POST MAPPING
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          userName: username, 
+          userPassword: password 
+        }),
+      });
+  
+      const data = await response.json();
       setLoading(false);
+  
+      if (response.ok) { // Might need to change when we implement AUTH
+        await AsyncStorage.setItem("userID", data.id.toString());
+        await AsyncStorage.setItem("username", data.userName);
 
-      if (isValidUser) {
-        const userID = await getUserID(username);
-
-        if (userID) {
-          //await AsyncStorage.setItem("userID", userID.toString()); // Store userID
-          await AsyncStorage.setItem("username", username);  // Store username
-          Alert.alert("Welcome", "You are now logged in!");
-
-          setTimeout(() => {
-            navigation.navigate("favoriteTeams", { username }); // Pass username via favoriteTeams
-          }, 500);
-        } else {
-          Alert.alert("Error", "User not found.");
-        }
+        Alert.alert("Welcome", `Hello, ${data.userName}!`);
+        navigation.navigate("FavoriteTeams", { username: data.userName });
       } else {
-        Alert.alert("Error", "Incorrect username or password.");
+        Alert.alert("Error", data.message || "Login failed.");
       }
     } catch (error) {
       setLoading(false);
@@ -71,10 +59,6 @@ export default function LoginScreen() {
       console.error(error);
     }
   };
-
-  if (!dbInitialized) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
 
   return (
     <ImageBackground source={loginPic} style={styles.backgroundImage}>

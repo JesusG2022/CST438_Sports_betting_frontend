@@ -35,11 +35,21 @@ export default function LoginScreen() {
   const [dbInitialized, setDbInitialized] = useState(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: GOOGLE_WEB_CLIENT_ID,
-    iosClientId: GOOGLE_IOS_CLIENT_ID,
-    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
-  });
+
+
+
+const redirectUri = makeRedirectUri({
+  native: 'gambleApp://auth',
+});
+  const authConfig = {
+  androidClientId: "235409881865-1jggrffjk7vkoiejp54cdklb53bh20ut.apps.googleusercontent.com",
+};
+// 2. Log the object to the console.
+console.log("--- CONFIG BEING PASSED TO GOOGLE AUTH ---");
+console.log(JSON.stringify(authConfig, null, 2));
+
+// 3. Pass that object to the hook.
+const [request, response, promptAsync] = Google.useAuthRequest(authConfig);
 
   useEffect(() => {
     const initializeDb = async () => {

@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  TextInput,
-  StyleSheet,
-  Button,
-  Alert,
-  ImageBackground,
-  ActivityIndicator,
-} from "react-native";
+import { Text, View, TextInput, StyleSheet, Button, Alert, ImageBackground, ActivityIndicator} from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/types";
 import loginPic from "../../assets/images/loginPic2.jpg";
@@ -26,30 +17,30 @@ export default function LoginScreen() {
       Alert.alert("Error", "Please enter both username and password.");
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
-      const response = await fetch(`http://10.11.116.214:8080/users/login`, { // points to back end so back end has to fetch from database ip might be hardcoded?
+      const response = await fetch(`http://192.168.0.32:8080/users/login`, { // points to back end so back end has to fetch from database ip might be hardcoded?
         method: "POST", // SENDING TO BACKEND / POST MAPPING
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          userName: username, 
-          userPassword: password 
+        body: JSON.stringify({
+          userName: username,
+          userPassword: password
         }),
       });
-  
+
       const data = await response.json();
       setLoading(false);
-  
+
       if (response.ok) { // Might need to change when we implement AUTH
         await AsyncStorage.setItem("userID", data.id.toString());
         await AsyncStorage.setItem("username", data.userName);
 
         Alert.alert("Welcome", `Hello, ${data.userName}!`);
-        navigation.navigate("FavoriteTeams", { username: data.userName });
+        navigation.navigate("FavoriteTeams", { username: data.userName, userId: data.id });
       } else {
         Alert.alert("Error", data.message || "Login failed.");
       }

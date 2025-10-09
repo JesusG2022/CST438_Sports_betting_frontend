@@ -1,140 +1,81 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  Image,
-} from "react-native";
+import { Text, View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import { callTeams } from "../ApiScripts";
-import { useRoute, RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "../navagation/types";
-import {
-  addTeamToFavs,
-  removeTeamFromFav,
-  getFavTeamNames,
-  logDatabaseContents,
-} from "../../database/db";
-
-interface Team {
-  id: string;
-  name: string;
-  nickname: string;
-  logo: string;
-}
 
 const FavoriteTeams = () => {
-  const route = useRoute<RouteProp<RootStackParamList, "favoriteTeams">>();
-  const username = route.params?.username;
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [teams, setTeams] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const initialize = async () => {
-      if (!username) {
-        console.error("No username received via navigation");
-        return;
-      }
-
-      setLoading(true);
-
+    const fetchTeams = async () => {
       try {
-        const favTeams = await getFavTeamNames(username);
-        setSelectedTeams(favTeams || []);
-
-        // TODO: This now fetches teams from our own backend via callTeams().
-        // Ensure the backend supports GET /api/teams and returns correct format.
-        const teamData = await callTeams();
-
-        if (teamData && teamData.length > 0) {
-          setTeams(teamData);
-        } else {
-          console.error("No teams received from backend.");
-        }
-      } catch (error) {
-        console.error("Error fetching teams:", error);
+        const teamsData = await callTeams();
+        setTeams(teamsData);
+      } catch (err) {
+        console.error("Failed to fetch teams:", err);
+        setError("Failed to fetch teams");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
-    initialize();
-  }, [username]);
-
-  const toggleTeamSelection = async (team_name: string) => {
-    if (!username) return;
-
-    let updatedTeams = [...selectedTeams];
-
-    if (updatedTeams.includes(team_name)) {
-      await removeTeamFromFav(username, team_name);
-      updatedTeams = updatedTeams.filter((name) => name !== team_name);
-    } else {
-      await addTeamToFavs(username, team_name);
-      updatedTeams.push(team_name);
-    }
-
-    setSelectedTeams(updatedTeams);
-    await logDatabaseContents();
-  };
+    fetchTeams();
+  }, []);
 
   if (loading) {
-    return <ActivityIndicator style={styles.loader} size="large" color="#0000ff" />;
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text>{error}</Text>
+      </View>
+    );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Select Your Favorite Teams</Text>
-      {teams.length === 0 ? (
-        <Text style={styles.errorText}>No teams available. Check backend connection.</Text>
-      ) : (
-        <FlatList
-          data={teams}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[
-                styles.teamItem,
-                selectedTeams.includes(item.name) ? styles.selectedTeam : {},
-              ]}
-              onPress={() => toggleTeamSelection(item.name)}
-            >
-              <View style={styles.teamContainer}>
-                <Image source={{ uri: item.logo }} style={styles.logo} />
-                <Text style={styles.teamText}>{item.name}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-      )}
+    <View style={{ padding: 16 }}>
+      <Text style={styles.title}>Teams</Text>
+      <FlatList
+        data={teams}
+        keyExtractor={(item) => item.teamID.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.teamItem}>
+            <Text style={styles.teamName}>{item.name}</Text>
+            <Text>{item.conference} Conference - {item.division} Division</Text>
+          </View>
+        )}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
-  loader: { flex: 1, justifyContent: "center", alignItems: "center" },
-  errorText: { fontSize: 16, color: "red", textAlign: "center" },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 16
+  },
   teamItem: {
-    padding: 15,
-    marginBottom: 5,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    flexDirection: "row",
-    alignItems: "center",
+    padding: 12,
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1
   },
-  teamContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  logo: { width: 40, height: 40, marginRight: 10, resizeMode: "contain" },
-  selectedTeam: { backgroundColor: "#87CEFA" },
-  teamText: { fontSize: 18 },
+  teamName: {
+    fontSize: 18,
+    fontWeight: "600"
+  }
 });
 
 export default FavoriteTeams;

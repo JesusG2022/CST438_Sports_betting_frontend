@@ -30,7 +30,7 @@ export default function LoginScreen() {
     setLoading(true);
   
     try {
-      const response = await fetch(`http://10.11.116.214:8080/users/login`, { // points to back end so back end has to fetch from database ip might be hardcoded?
+      const response = await fetch('http://192.168.1.215:8080/api/login', { // points to back end so back end has to fetch from database ip might be hardcoded?
         method: "POST", // SENDING TO BACKEND / POST MAPPING
         headers: {
           "Content-Type": "application/json",

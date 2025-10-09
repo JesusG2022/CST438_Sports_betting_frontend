@@ -1,9 +1,8 @@
 // NOTE: This file previously used external API calls to RapidAPI's NBA endpoint.
 // These calls have been removed in preparation for switching to our own backend.
 
-// TODO: Replace this with backend's API base URL.
-// Example: "http://localhost:8080/api" 
-const BACKEND_BASE_URL = "http://localhost:8080/api";
+// ✅ REPLACED localhost with local IP address
+const BACKEND_BASE_URL = "http://192.168.1.215:8080/api";
 
 /**
  * Placeholder for calling our backend API.
@@ -26,32 +25,23 @@ export const apiCall = async (endpoint) => {
 };
 
 /**
- * TODO: Replace with call to our backend endpoint to get teams.
- * Example: GET /api/teams
+ * ✅ Updated to use local IP instead of localhost
+ * This calls the /teams route from the backend.
  */
 export const callTeams = async () => {
   try {
-    const json = await apiCall(`${BACKEND_BASE_URL}/teams`);
-    if (!json) throw new Error("Invalid response");
-
-    // TODO: Adjust this mapping based on how our backend sends team data
-    const teamData = json.map((team) => ({
-      id: team.id,
-      name: team.name,
-      nickname: team.nickname,
-      logo: team.logo,
-    }));
-
-    return teamData;
+    const response = await fetch("http://192.168.1.215:8080/teams"); // updated
+    const data = await response.json();
+    console.log("Teams API response:", data);
+    return data._embedded.teamList;
   } catch (error) {
     console.error("Error fetching teams:", error);
-    return [];
+    throw error;
   }
 };
 
 /**
- * TODO: Replace with call to our backend endpoint to get games.
- * Example: GET /api/games?start=YYYY-MM-DD&end=YYYY-MM-DD&teamId=XXX
+ * Calls backend endpoint to get games by date and team ID.
  */
 export const callGamesByDate = async (startDate, endDate, teamID) => {
   try {
@@ -60,7 +50,6 @@ export const callGamesByDate = async (startDate, endDate, teamID) => {
     );
     if (!json) throw new Error("Invalid response");
 
-    // TODO: Adjust this mapping to match your backend's game data format
     const gameData = json.map((game) => ({
       id: game.id,
       date: new Date(game.date),

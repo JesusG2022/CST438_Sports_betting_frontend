@@ -30,13 +30,11 @@ yarn-error.*
 *.pem
 
 # Android
-/andriod/
 /android/app/build/
 /android/.gradle/
 /android/build/
 
 # iOS
-/ios/
 /ios/build/
 /ios/Pods/
 

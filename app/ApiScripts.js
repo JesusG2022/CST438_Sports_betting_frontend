@@ -30,7 +30,7 @@ export const apiCall = async (endpoint) => {
  */
 export const callTeams = async () => {
   try {
-    const response = await fetch("http://10.11.140.56:8080/teams"); // updated
+    const response = await fetch("http://10.11.116.214:8080/teams"); // updated
     const data = await response.json();
     console.log("Teams API response:", data);
     return data._embedded.teamList;

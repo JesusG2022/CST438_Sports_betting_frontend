@@ -29,6 +29,17 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# Android
+/andriod/
+/android/app/build/
+/android/.gradle/
+/android/build/
+
+# iOS
+/ios/
+/ios/build/
+/ios/Pods/
+
 # local env files
 .env*.local
 .env

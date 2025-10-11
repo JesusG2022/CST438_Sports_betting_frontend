@@ -39,10 +39,12 @@ export default function LoginScreen() {
 
 
 const redirectUri = makeRedirectUri({
-  native: 'gambleApp://auth',
+  scheme: 'com.gabethemyers.gambleApp'  
 });
   const authConfig = {
   androidClientId: "235409881865-1jggrffjk7vkoiejp54cdklb53bh20ut.apps.googleusercontent.com",
+  webClientId: "235409881865-ib1ic7akumtkb50bkt2crnr4r9brun35.apps.googleusercontent.com",
+  redirectUri: redirectUri,
 };
 // 2. Log the object to the console.
 console.log("--- CONFIG BEING PASSED TO GOOGLE AUTH ---");

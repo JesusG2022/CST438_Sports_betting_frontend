@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Text, View, FlatList, ActivityIndicator, StyleSheet } from "react-native";
 import { callTeams } from "../ApiScripts";
 
-const FavoriteTeams = () => {
+const Teams = () => {
   const [teams, setTeams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,4 +78,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default FavoriteTeams;
+export default Teams;

@@ -2,7 +2,7 @@
 // These calls have been removed in preparation for switching to our own backend.
 
 // ✅ REPLACED localhost with local IP address
-const BACKEND_BASE_URL = "http://192.168.1.215:8080/api";
+const BACKEND_BASE_URL = "https://project2cst438group9-70c9b7b662e0.herokuapp.com/api";
 
 /**
  * Placeholder for calling our backend API.
@@ -30,7 +30,7 @@ export const apiCall = async (endpoint) => {
  */
 export const callTeams = async () => {
   try {
-    const response = await fetch("http://192.168.1.215:8080/teams"); // updated
+    const response = await fetch("https://project2cst438group9-70c9b7b662e0.herokuapp.com/teams");
     const data = await response.json();
     console.log("Teams API response:", data);
     return data._embedded.teamList;

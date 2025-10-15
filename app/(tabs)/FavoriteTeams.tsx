@@ -17,7 +17,7 @@ interface Team {
   division: string;
 }
 
-const API_BASE_URL = "http://10.11.116.214:8080";
+const API_BASE_URL = "http://192.168.1.215:8080";
 
 const FavoriteTeamsList = () => {
   const route = useRoute<RouteProp<RootStackParamList, "favoriteTeams">>();

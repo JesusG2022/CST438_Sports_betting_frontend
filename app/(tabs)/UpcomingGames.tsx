@@ -21,7 +21,7 @@ const UpcomingGames = () => {
   const fetchGames = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://192.168.1.215:8080/games");
+      const res = await fetch("https://project2cst438group9-70c9b7b662e0.herokuapp.com/games");
       const json = await res.json();
       const gameList: Game[] = json._embedded?.gameList || [];
       setGames(gameList);

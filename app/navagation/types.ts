@@ -4,6 +4,6 @@ export type RootStackParamList = {
     Login: undefined;
     CreateAccount: undefined; // This is the AccountCreation screen
     Logout: undefined; // This is the logout screen
-    favoriteTeams: { username: string };
+  favoriteTeams: { userId: number; username: string };
   };
   

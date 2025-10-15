@@ -17,7 +17,7 @@ interface Team {
   division: string;
 }
 
-const API_BASE_URL = "http://10.11.116.214:8080";
+const API_BASE_URL = "https://project2cst438group9-70c9b7b662e0.herokuapp.com";
 
 const FavoriteTeamsList = () => {
   const route = useRoute<RouteProp<RootStackParamList, "favoriteTeams">>();

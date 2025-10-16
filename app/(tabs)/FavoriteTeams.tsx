@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
-import { useRoute, RouteProp } from "@react-navigation/native";
-import { RootStackParamList } from "../navagation/types";
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Fav {
   fav: number;
@@ -20,44 +20,59 @@ interface Team {
 const API_BASE_URL = "https://project2cst438group9-70c9b7b662e0.herokuapp.com";
 
 const FavoriteTeamsList = () => {
-  const route = useRoute<RouteProp<RootStackParamList, "favoriteTeams">>();
-  const userId = route.params?.userId;
-
+  const [userId, setUserId] = useState<number | null>(null);
   const [favTeams, setFavTeams] = useState<Fav[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!userId) return;
-
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchTeams = async () => {
       try {
-        // Fetch user's favorite teams
-        const favRes = await fetch(`${API_BASE_URL}/favs/user/${userId}`);
-        const favJson = await favRes.json();
-        const favList: Fav[] = favJson._embedded?.favList || [];
-        setFavTeams(favList);
-
-        // Fetch all teams
         const teamRes = await fetch(`${API_BASE_URL}/teams`);
         const teamJson = await teamRes.json();
         const teamList: Team[] = teamJson._embedded?.teamList || [];
         setTeams(teamList);
       } catch (err) {
         console.error(err);
-        Alert.alert("Error", "Could not load favorite teams.");
       }
-      setLoading(false);
     };
 
-    fetchData();
-  }, [userId]);
+    fetchTeams();
+  }, []);
+
+  // Refresh favorites whenever screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        setLoading(true);
+        try {
+          // Get userId from AsyncStorage - This works
+          const storedUserId = await AsyncStorage.getItem("userID");
+          if (!storedUserId) {
+            setLoading(false);
+            return;
+          }
+          
+          setUserId(parseInt(storedUserId));
+
+          const favRes = await fetch(`${API_BASE_URL}/favs/user/${storedUserId}`);
+          const favJson = await favRes.json();
+          const favList: Fav[] = favJson._embedded?.favList || [];
+          setFavTeams(favList);
+        } catch (err) {
+          console.error(err);
+          Alert.alert("Error", "Could not load favorite teams.");
+        }
+        setLoading(false);
+      };
+
+      fetchData();
+    }, [])
+  );
 
   const unfavoriteTeam = async (fav: Fav) => {
     try {
       await fetch(`${API_BASE_URL}/favs/${fav.fav}`, { method: "DELETE" });
-      // Remove from local state
       setFavTeams(prev => prev.filter(f => f.fav !== fav.fav));
     } catch (err) {
       console.error(err);
@@ -70,10 +85,13 @@ const FavoriteTeamsList = () => {
   }
 
   if (favTeams.length === 0) {
-    return <Text style={styles.noFavs}>You have no favorite teams yet.</Text>;
+    return (
+      <View style={styles.container}>
+        <Text style={styles.noFavs}>You have no favorite teams yet.</Text>
+      </View>
+    );
   }
 
-  // Map favorites to actual team info
   const favoriteTeamsWithDetails = favTeams.map(fav => {
     const team = teams.find(t => t.teamID === fav.teamID);
     return {
@@ -93,8 +111,10 @@ const FavoriteTeamsList = () => {
         renderItem={({ item, index }) => (
           <View style={styles.item}>
             <Text style={styles.rank}>{index + 1}.</Text>
-            <Text style={styles.teamName}>{item.name}</Text>
-            <Text style={styles.info}>{item.conference} / {item.division}</Text>
+            <View style={styles.teamInfo}>
+              <Text style={styles.teamName}>{item.name}</Text>
+              <Text style={styles.info}>{item.conference} / {item.division}</Text>
+            </View>
             <TouchableOpacity onPress={() => unfavoriteTeam(item)}>
               <Text style={styles.star}>★</Text>
             </TouchableOpacity>
@@ -139,15 +159,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     width: 30
   },
+  teamInfo: {
+    flex: 1,
+    marginLeft: 8
+  },
   teamName: {
     fontSize: 16,
-    flex: 1
+    fontWeight: "600"
   },
   info: {
     fontSize: 14,
     color: "#555",
-    width: 120,
-    textAlign: "right"
+    marginTop: 2
   },
   star: {
     fontSize: 20,

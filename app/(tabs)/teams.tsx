@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { callTeams } from "../ApiScripts";
+import { callTeams } from "../../src/scripts/ApiScripts";
 
 const API_BASE_URL = "https://project2cst438group9-70c9b7b662e0.herokuapp.com";
 

@@ -1,5 +1,6 @@
 
 // App.tsx (or wherever your navigation is set up)
+// ANDROID: 903290334581-9rqa6mf7il4rbndgckl86js5hk86ie9h.apps.googleusercontent.com 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -7,7 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Index from '../app/(tabs)/index'; // Your main screen
 import LoginScreen from './(tabs)/login';
 import AccountCreation from './AccountCreation'; // The account creation screen
-import { RootStackParamList } from '../app/navagation/types'; // Navigation types
+import { RootStackParamList } from '../src/types/types'; // Navigation types
 import FavoriteTeamsList from './(tabs)/FavoriteTeams';
 import LogoutScreen from './(tabs)/logout';
 

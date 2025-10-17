@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../navagation/types";
+import { RootStackParamList } from "../../src/types/types";
 
 // Define the type for navigation in LogoutScreen
 type LogoutScreenNavigationProp = StackNavigationProp<RootStackParamList, "Logout">;

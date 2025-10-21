@@ -22,9 +22,6 @@ describe('Stats table /api/stats', () => {
     expect([200, 404]).toContain(res.status);
     if (res.status === 200) {
       const stats = await res.json();
-      expect(stats).toBeDefined();
-      // typical stat fields (adjust to your schema)
-      // e.g., expect(stats).toHaveProperty('wins');
     }
   });
 

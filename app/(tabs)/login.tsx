@@ -49,6 +49,8 @@ export default function LoginScreen() {
 
   // Handle Google OAuth response
   useEffect(() => {
+    setUsername('');
+    setPassword('');
     console.log('OAuth Response:', response);
     
     if (response?.type === "success") {
@@ -148,6 +150,8 @@ export default function LoginScreen() {
         setTimeout(() => {
           showAlert("Welcome", `Hello, ${data.userName}!`);
         }, 500);
+        setUsername('');
+        setPassword('');
       } else {
         showAlert("Error", data.message || "Login failed.");
       }

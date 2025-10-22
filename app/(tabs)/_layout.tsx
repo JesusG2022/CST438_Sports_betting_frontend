@@ -1,6 +1,8 @@
 import { Tabs } from "expo-router";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { IconSymbol } from '@/components/ui/IconSymbol';
+
 
 export default function TabLayout() {
   return (
@@ -28,23 +30,32 @@ export default function TabLayout() {
               size={24}
             />
           ),
+          tabBarStyle: { display: 'none' },  // hides the bottom tab bar
+          href: null,
         }}
       />
-      <Tabs.Screen
-        name="about"
+       <Tabs.Screen
+        name="teams"
         options={{
-          title: "About",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={
-                focused ? "information-circle" : "information-circle-outline"
-              }
-              color={color}
-              size={24}
-            />
-          ),
+          title: "Teams",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="0.circle.ar" color={color} />,
         }}
       />
+       <Tabs.Screen
+        name="UpcomingGames"
+        options={{
+          title: "Upcoming Games",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} />,
+        }}
+      />
+       <Tabs.Screen
+        name="FavoriteTeams"
+        options={{
+          title: "Favorite Teams",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+
       <Tabs.Screen
         name="login"
         options={{
@@ -58,6 +69,15 @@ export default function TabLayout() {
               size={24}
             />
           ),
+          tabBarStyle: { display: 'none' },  // hides the bottom tab bar
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="logout"
+        options={{
+          title: "Logout",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="0.circle" color={color} />,
         }}
       />
     </Tabs>

@@ -4,7 +4,7 @@ import { Image } from "expo-image";
 import Button from "@/components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../navagation/types"; // Import navigation types
+import { RootStackParamList } from "../../src/types/types"; // Import navigation types
 import loginPicture from "../../assets/images/loginPic.jpg";
 import {initializeDatabase, getAllTeams } from "../../database/db";
 
@@ -63,7 +63,7 @@ const Index = () => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={loginPicture} style={styles.image} resizeMode="cover" />
+        <Image source={loginPicture} style={styles.image} contentFit="cover" />
       </View>
       <View style={styles.footerContainer}>
       <Button theme="primary" label="Login" onPress={handleLogin} />

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { View, Text, Button } from "react-native";
-import { callGamesByDate } from "../ApiScripts"; // This now calls your own backend
+import { callGamesByDate } from "../../src/scripts/ApiScripts"; // This now calls your own backend
 
 const GameFetcher = () => {
   const startDate = "2025-01-01";

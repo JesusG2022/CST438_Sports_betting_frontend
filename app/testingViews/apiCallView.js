@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, Text, View, ScrollView } from 'react-native';
 
 // Import the updated apiCall function
-import { apiCall } from '../ApiScripts';
+import { apiCall } from '../../src/scripts/ApiScripts';
 
 const ApiCallView = () => {
   const [isLoading, setLoading] = useState(true);

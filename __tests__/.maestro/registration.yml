@@ -1,0 +1,39 @@
+# Use the correct package name you found earlier
+appId: "com.example.gambleapp"
+---
+- launchApp
+
+# This block handles the Expo Dev Client menu.
+# It taps on your app's name to actually load it.
+# Change "gambleApp" to your app's display name from app.json
+# - tapOn:
+#     text: "gambleApp"
+#     optional: true
+
+# --- Your Registration Test Starts Here ---
+
+# 1. Tap the "Create Account" button on the home screen
+- tapOn: "Create Account"
+
+# 2. Fill out the registration form
+- tapOn: "Username"
+- inputRandomText
+
+- tapOn: "Email"
+- inputRandomEmail
+
+- tapOn: "Password"
+- inputText: "Password123!"
+
+- tapOn: "Confirm Password"
+- inputText: "Password123!"
+
+# 3. Tap the "Create Account" button on the form
+- tapOn:
+    text: "CREATE ACCOUNT"
+    index: 1
+
+# 4. Verify the "Account Created" pop-up is visible
+- assertVisible: "Account Created"
+
+- tapOn: "OK" 

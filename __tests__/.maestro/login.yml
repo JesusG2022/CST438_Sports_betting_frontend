@@ -1,0 +1,26 @@
+# login-success.yml
+appId: "com.example.gambleapp"
+---
+- launchApp
+
+- tapOn:
+    text: "gambleApp"
+    optional: true
+
+# 1. On the home screen, tap the "Login" button
+- tapOn: ", Login"
+
+# 2. Fill out the login form
+- tapOn: "Username"
+- inputText: "testuser123"
+
+- tapOn: "Password"
+- inputText: "Password123!" # Use the password from your first test
+
+# 3. Tap the "Login" button on the form
+- tapOn:
+    text: "LOGIN"
+    index: 1
+
+# 4. Assert you are on the home screen
+- assertVisible: "Home"
